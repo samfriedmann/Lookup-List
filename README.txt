@@ -3,12 +3,12 @@ Lookup List is a program that allows you to quickly lookup a list of words
 using Google Dictionary and Wikipedia.
 
 -----HOW TO USE-----
-To use this Lookup List, add your words to the words.txt file in \lookup_list.
+To use this Lookup List, add your words to the words.txt file in the root folder.
 Then run Lookup List. It will create (or modify) wordsDefined.txt
 
 ------CREDITS------
 This awesome program was made by Sam Friedman and a SHIT TON of Chrome tabs.
-© Sam Friedman 2020 All Rights Reserved
+© Sam Friedman 2020 - All Rights Reserved
 
 ------THANKS------
 Special thanks to W3Schools and Stack Overflow
