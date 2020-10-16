@@ -3,6 +3,26 @@ import json
 import wikipedia
 import re
 import os
+import sys
+
+if len(sys.argv) >= 2:
+    if sys.argv[1]=="log": # If log parameter is present, enable logging
+
+        class Logger(object):
+            def __init__(self):
+                self.terminal = sys.stdout
+                self.log = open("logfile.log", "w")
+
+            def write(self, message):
+                self.terminal.write(message)
+                self.log.write(message)  
+
+            def flush(self):
+                pass    
+
+        sys.stdout = Logger()
+
+        print("Logging is enabled, creating logfile.log...\n")
 
 def lookup(word, num_sentences):
     try: # try Google dictionarty first
@@ -52,10 +72,10 @@ def main(num_sentences): # main method
         file=open('words.txt', encoding='utf8') # open the words file
     except Exception as err:
         print(err) # print errors
-        print("File not found. Please ensure words.txt is in the root directory.")
+        print("File not found.")
         print("Currently working in "+str(os.getcwd())) # print info about local directory and files to help diagnose missing words.txt
         print("Only files in this directory are: "+str(os.listdir()))
-        input("\nPress Enter to continue.")
+        input("\nPlease ensure words.txt is in the root directory. Press Enter to continue.")
 
     words = [line for line in file.readlines() if line.strip()] # append each non-empty line of text in the file to the words list
     file.close() # close the file
@@ -102,14 +122,20 @@ def main(num_sentences): # main method
     definitions_file.close() # close the file
 
 
+
+
+
 while True:
     try:
-        num_sentences = int(input("Enter number of sentences to get from Wikipedia: ")) # get number of sentences from user
+        print("Enter number of sentences to get from Wikipedia: ")
+        num_sentences = int(input()) # get number of sentences from user
     except Exception: # if it is not an integer,
         print("Number must be an integer.") # inform the user and..
         continue # return to the start of the loop
     else: # if it is an integer,
         break # break the loop
+
+
 
 main(num_sentences) # call the main function (parameter is number of sentences to get from Wikipedia)
 
