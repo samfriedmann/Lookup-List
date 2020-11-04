@@ -25,6 +25,7 @@ if len(sys.argv) >= 2:
         print("Logging is enabled, creating logfile.log...\n")
 
 def lookup(word, num_sentences):
+        
     try: # try Google dictionarty first
         response = requests.get("https://api.dictionaryapi.dev/api/v2/entries/en/"+word) # get response from (unofficial) Google Dictionary API (as JSON)
         response.raise_for_status() # returns an HTTPError object if an error has occurred
@@ -40,16 +41,41 @@ def lookup(word, num_sentences):
         print("   Definition not found on Google for '"+word+"'. Checking Wikipedia instead...")
         try:
             definition=wikipedia.summary(word, sentences=num_sentences, auto_suggest=True, redirect=True) # try to find the word on Wikipedia
-            print("According to Wikipedia: "+definition)
-        except Exception: # if a page isn't immedietly available (disambiguation, etc)
+            if len(definition.split()) < 8: # if the definition contains fewer than 8 words
+                print("   The definition of "+word+" was too short, getting definiton with "+str(num_sentences+1)+" sentences instead.")
+                definition=wikipedia.summary(word, sentences=num_sentences+1, auto_suggest=True, redirect=True) # get the definition with one extra sentence
+
+        except Exception as err: # if a page isn't immedietly available (disambiguation, etc)
+            print(err)
             try:
                 print("   Couldn't find a Wikipedia article called '"+word+"'. Searching Wikipedia for relevant articles...")
-                actual_article=wikipedia.search(word)[0] # suggest the result
-                print("   Wikipedia returned '"+actual_article+"' as the best article. Getting summary of '"+actual_article+"'...")
-                definition=wikipedia.summary(actual_article, sentences = num_sentences, auto_suggest=False, redirect=True) # get a summary of that article
-            except Exception:
+                word=wikipedia.search(word)[0] # suggest the result
+                print("   Wikipedia returned '"+word+"' as the best article. Getting summary of '"+word+"'...")
+                definition=wikipedia.summary(word, sentences = num_sentences, auto_suggest=False, redirect=True) # get a summary of that article
+                if len(definition.split()) < 8: # if the definition contains fewer than 8 words
+                    print("   The definition of "+word+" was too short, getting definiton with "+str(num_sentences+1)+" sentences instead.")
+                    definition=wikipedia.summary(word, sentences=num_sentences+1, auto_suggest=True, redirect=True) # get the definition with one extra sentence
+            except Exception as err:
+                print(err)
                 definition="No definition found."
-            print("According to Wikipedia: "+definition)
+
+        # print("According to Wikipedia, the extended definition is: "+definition)
+
+        # experimental U.S. detection...
+        # US_list = definition.split()
+        # num_US=US_list.count("U.S.")
+        # print("U.S. occured "+str(num_US)+" times in the string")
+        # sentence_split=''
+        # sentence_split.join(definition.split("U.S.", num_US)[:num_US])
+
+        # sentence_split=definition.split('.')[0] # isolate the part before the first period
+        # if len(sentence_split.split()) > 5: # if this first "sentence" contains more than 5 words
+        #     definition=sentence_split # assign it to the definition
+
+        # *******************
+        # when there is a v. in the definition, it gets split. Solution, if word.contains("v."), get one extra sentence and split manually
+
+        print("According to Wikipedia: "+definition)
 
         if ' is ' in definition or ' was ' in definition or ' are ' in definition or ' were ' in definition: # if the Wikipedia definition contains one of these words
             print("   Isolating the definition...")
@@ -57,25 +83,25 @@ def lookup(word, num_sentences):
 
     if '==' in definition: # if the definition contains dividers
         print("   Detected new heading divider. Isolating preceding text...")
-        definition = definition.split('==')[0] # split the definition once and assign the first part to definition
+        definition = definition.split('==')[0] # split the definition and assign the first part to definition
         print("Extracted: "+definition)
 
     print("   Cleaning up definition to remove excess characters, end periods, and line breaks...")
     definition = definition.strip() # strip any unnecessary start or end spaces
     definition = definition.replace('\n', ' ')
-    definition = definition[:-1] # remove end period
+    if definition.endswith('.'): # if the last character is a period
+        definition = definition[:-1] # remove end period
     return definition # return the definition of the word
 
 def main(num_sentences): # main method
     try: 
         print("Opening words file...")
         file=open('words.txt', encoding='utf8') # open the words file
-    except Exception as err:
-        print(err) # print errors
+    except Exception:
         print("File not found.")
         print("Currently working in "+str(os.getcwd())) # print info about local directory and files to help diagnose missing words.txt
         print("Only files in this directory are: "+str(os.listdir()))
-        input("\nPlease ensure words.txt is in the root directory. Press Enter to continue.")
+        input("\nPlease ensure words.txt is in the root directory (same folder where this program is located). Press Enter to continue.")
 
     words = [line for line in file.readlines() if line.strip()] # append each non-empty line of text in the file to the words list
     file.close() # close the file
@@ -113,17 +139,13 @@ def main(num_sentences): # main method
     definitions_file = open('wordsDefined.txt', 'w', encoding='utf8') # open the destination file for writing
     for i in range(len(words)): # for each element in the words list
         definitions_file.writelines(words[i]+" - "+definitions[i]+"\n") # write each 'word - definition' line
-    print("\nSuccessfully wrote "+str(successful_words)+" terms and definitions to wordsDefined.txt.")
+    print("\nSuccessfully wrote "+str(successful_words)+" out of "+str(len(words))+" terms and definitions to wordsDefined.txt.")
     if len(errors) == 1: # if there were errors, print them
         print("There was 1 term I could not define: '"+str(errors[0])+"'")
     elif len(errors) > 0:
         print("There were "+str(len(errors))+" terms I could not define: "+str(errors))
 
     definitions_file.close() # close the file
-
-
-
-
 
 while True:
     try:
@@ -134,8 +156,6 @@ while True:
         continue # return to the start of the loop
     else: # if it is an integer,
         break # break the loop
-
-
 
 main(num_sentences) # call the main function (parameter is number of sentences to get from Wikipedia)
 
