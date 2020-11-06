@@ -2,7 +2,7 @@
 Lookup List is a program that allows you to quickly lookup a list of words using Google Dictionary and Wikipedia.
 
 ## How to Use
-Download lookup-list.exe and words.txt. To use this Lookup List, add your words to the words.txt file in the root folder. Make sure to save your changes. Then run Lookup-List.exe. Enter the number of sentences to get for definitions (1 will get one sentence definitions, and so on). It will create (or modify) wordsDefined.txt.
+Download and run lookup-list.exe. Upon first running, it will create a file called words.txt. To use Lookup List, add your words to the words.txt file (it should be in the root folder) and make sure to save your changes. Then run Lookup-List.exe again. Enter the number of sentences to get for definitions (1 will get one sentence long definitions, and so on). The program will look up definitions for all the words and write (or overwrite) them to wordsDefined.txt.
 
 ## Credits
 This awesome program was made by Sam Friedman and a SHIT TON of Chrome tabs.
