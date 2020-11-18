@@ -9,7 +9,7 @@ This awesome program was made by Sam Friedman and a SHIT TON of Chrome tabs.
 © Sam Friedman 2020 - All Rights Reserved
 
 ## Thanks
-Special thanks to W3Schools and Stack Overflow
+Special thanks to W3Schools and Stack Overflow.
 Special thanks to Coach Clark and the boys for the inspiration to write this script.
 
 ## Notes
