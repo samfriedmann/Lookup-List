@@ -5,12 +5,12 @@ Lookup List is a program that allows you to quickly lookup a list of words using
 Download and run lookup-list.exe. Upon first running, it will create a file called words.txt. Add the terms you wish to look up to the words.txt file and make sure to save your changes. Then run lookup-list.exe again. Enter the number of sentences to get for definitions from Wikipedia (1 will get one sentence long definitions, and so on). The program will look up definitions for all the words and write (or overwrite) them to words_defined.txt.
 
 ## Credits
-This awesome program was made by Sam Friedman and a SHIT TON of Chrome tabs.
-\n© Sam Friedman 2020 - All Rights Reserved
+This awesome program was made by Sam Friedman and a SHIT TON of Chrome tabs.  
+© Sam Friedman 2020 - All Rights Reserved
 
 ## Thanks
-Special thanks to W3Schools and Stack Overflow.
-\nSpecial thanks to Coach Clark and the boys for the inspiration to write this script.
+Special thanks to W3Schools and Stack Overflow.  
+Special thanks to Coach Clark and the boys for the inspiration to write this script.
 
 ## Notes
 This program is a WORK IN PROGRESS. It has not been thourougly tested and  contains MANY BUGS. I am in no way responsible for any lost or damaged files or data or any computers catching fire.
