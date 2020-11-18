@@ -3,7 +3,6 @@ import json
 import wikipedia
 import re
 import sys
-import os.path
 
 if len(sys.argv) >= 2:
     if sys.argv[1] == "log":  # If log parameter is present, enable logging
@@ -35,9 +34,8 @@ def lookup(word, num_sentences):
         print(f"The definition of {word} is: "+definition)
 
     except Exception as err: # if there's an error (can't find the word on Google Dictionary)
-        print(f'   An error occurred getting the definition from Google: {err}')
-        print("   Definition not found on Google for '" +
-              word+"'. Checking Wikipedia instead...")
+        print(f"   An error occurred getting the definition from Google: {err}")
+        print(f"   Definition not found on Google for '{word}'. Checking Wikipedia instead...")
         try:
             definition = wikipedia.summary(word, sentences=num_sentences, auto_suggest=True, redirect=True) # try to find the word on Wikipedia
             if len(definition.split()) < 8:  # if the definition contains fewer than 8 words
@@ -78,15 +76,16 @@ def lookup(word, num_sentences):
 
 def main():  # main method
 
-    if os.path.exists("words.txt"):
-        print("Opening words file...")
+    try: # try to...
         file = open('words.txt', encoding='utf8')  # open the words file
-    else:
+    except: # if you can't open it (meaning it probably doesn't exist)...
         print("Creating words.txt file...")
         file = open('words.txt', 'w', encoding='utf8')  # create the words file
         file.write("Paste words or phrases here, one term per line.\nMake sure to save changes to this file (Ctrl+S)."
                    + "\nPlease delete this message before proceeding.")
         input("Please enter your words into the words.txt file and run the program again. Press Enter to continue.")
+    else: # if you can open it
+        print("Opening words file...")
 
     words = [line for line in file.readlines() if line.strip()] # append each non-empty line of text in the file to the words list
     file.close()  # close the file
@@ -132,16 +131,14 @@ def main():  # main method
 
     successful_words = len(words)-len(errors) # calculate the number of successfully defined terms
 
-    definitions_file = open('wordsDefined.txt', 'w', encoding='utf8')  # open the destination file for writing
+    definitions_file = open('words_defined.txt', 'w', encoding='utf8')  # open the destination file for writing
     for i in range(len(words)):  # for each element in the words list
         definitions_file.writelines(words[i]+" - "+definitions[i]+"\n") # write each 'word - definition' line
-    print(
-        f"\nSuccessfully wrote {str(successful_words)} out of {str(len(words))} terms and definitions to wordsDefined.txt.")
+    print(f"\nSuccessfully wrote {str(successful_words)} out of {str(len(words))} terms and definitions to wordsDefined.txt.")
     if len(errors) == 1:  # if there were errors, print them
         print("There was 1 term I could not define: '"+str(errors[0])+"'")
     elif len(errors) > 0:
-        print(
-            f"There were {str(len(errors))} terms I could not define: "+str(errors))
+        print(f"There were {str(len(errors))} terms I could not define: "+str(errors))
 
     definitions_file.close()  # close the file
 
