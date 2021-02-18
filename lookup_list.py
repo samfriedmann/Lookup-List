@@ -79,11 +79,11 @@ def lookup(word, num_sentences):
                 # print(err)
                 definition = "No definition found."
 
-            print("According to Wikipedia: "+definition)
+        print("According to Wikipedia: "+definition)
 
-            if ' is ' in definition or ' was ' in definition or ' are ' in definition or ' were ' in definition: # if the Wikipedia definition contains one of these words
-                print("   Isolating the definition...")
-                definition = re.split(" is | was | are | were", definition, maxsplit=1)[1] # split the definition once and assign the second part ([1]) to definition
+        if ' is ' in definition or ' was ' in definition or ' are ' in definition or ' were ' in definition: # if the Wikipedia definition contains one of these words
+            print("   Isolating the definition...")
+            definition = re.split(" is | was | are | were", definition, maxsplit=1)[1] # split the definition once and assign the second part ([1]) to definition
 
     if '==' in definition:  # if the definition contains dividers
         print("   Detected new heading divider. Isolating preceding text...")
