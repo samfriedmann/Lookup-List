@@ -22,6 +22,9 @@ if len(sys.argv) >= 2:
 
 def lookup(word, num_sentences):
 
+    if 'v.' in word: # for court cases
+       num_sentences+=1 # definitions often contain lots of periods which mistakenly cut it short, so get an extra "sentence"
+
     if len(word.split()) < 3:
         try: # only try Google dictionarty first for terms with fewer than 3 words
             response = requests.get("https://api.dictionaryapi.dev/api/v2/entries/en/"+word) # get response from (unofficial) Google Dictionary API (as JSON)
@@ -45,7 +48,7 @@ def lookup(word, num_sentences):
                     word = wikipedia.search(word)[0]  # suggest the result
                     print(f"   Wikipedia returned '{word}' as the best article. Getting summary of '{word}'...")
                     definition = wikipedia.summary(word, sentences=num_sentences, auto_suggest=False, redirect=True) # get a summary of that article
-                    if len(definition.split()) < 8:  # if the definition contains fewer than 8 words
+                    if len(definition.split()) < 6:  # if the definition contains fewer than 8 words
                         print(f"   The definition of {word} was too short, getting definiton with {str(num_sentences+1)} sentences instead.")
                         definition = wikipedia.summary(word, sentences=num_sentences+1, auto_suggest=True, redirect=True) # get the definition with one extra sentence
                 except Exception as err:
@@ -62,7 +65,7 @@ def lookup(word, num_sentences):
         print("   Since this item has more than 2 words, I won't bother checking Google Dictionary for it.")
         try:
             definition = wikipedia.summary(word, sentences=num_sentences, auto_suggest=True, redirect=True) # try to find the word on Wikipedia
-            if len(definition.split()) < 8:  # if the definition contains fewer than 8 words
+            if len(definition.split()) < 6:  # if the definition contains fewer than 8 words
                 print(f"   The definition of {word} was too short, getting definiton with {str(num_sentences+1)} sentences instead.")
                 definition = wikipedia.summary(word, sentences=num_sentences+1, auto_suggest=True, redirect=True) # get the definition with one extra sentence
         except Exception as err: # if a page isn't immedietly available (disambiguation, etc)
